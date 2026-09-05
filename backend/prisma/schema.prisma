@@ -1,0 +1,34 @@
+// Bước 1 — Thiết kế Database. Bắt đầu với bảng User.
+// Các model khác (Specialty, DoctorProfile, Appointment...) sẽ được thêm dần ở các bước sau,
+// cùng lúc các field quan hệ (doctorProfile, appointments, reviews) sẽ được bổ sung vào đây.
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  PATIENT
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  fullName     String
+  phone        String?
+  dateOfBirth  DateTime? @db.Date
+  role         Role      @default(PATIENT)
+  refreshToken String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("users")
+}
